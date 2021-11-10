@@ -15,7 +15,7 @@ async function getEmployees(url){
         .then(data => {
             employeeList = data.results;
             employeeGallery(employeeList);
-            // employeeModal(employeeList);
+            clickedEmployee(employeeList);
         })
         // for later...add error methods to log if there is an error...
         // look into the error message on the console.
@@ -41,8 +41,7 @@ function employeeGallery(data){
 }
 
 // following function displays and closes the modal when an employee is clicked...
-
-function modalWindow(){
+function modalWindow(employee){
     let box = `
     <div class="modal-container">
     <div class="modal">
@@ -54,7 +53,7 @@ function modalWindow(){
             <p class="modal-text cap">${employee.location.city}</p>
             <hr>
             <p class="modal-text">${employee.phone}</p>
-            <p class="modal-text">${employee.location.stree.number} ${employee.location.street.name} ${employee.location.city} ${employee.location.state} ${employee.location.postcode}</p>
+            <p class="modal-text">${employee.location.street.number} ${employee.location.street.name} ${employee.location.city} ${employee.location.state} ${employee.location.postcode}</p>
             <p class="modal-text">Birthday: ${employee.dob.date.slice(5,7)}/ ${employee.dob.date.slice(8,10)}/ ${employee.dob.date.slice(0,4)} </p>
         </div>
     </div>` 
@@ -64,12 +63,25 @@ function modalWindow(){
 
     // closes the box
     let closeButton = document.getElementById("modal-close-btn");
-    let boxContainer = document.getElementsByClassName("modal-container");
+    let boxContainer = document.querySelector(".modal-container");
     closeButton.addEventListener("click", (e) => {
         boxContainer.remove();
     })
 
 }
+
+// checks which employee has been clicked and sends the data to the modalWindow function to display it...
+
+function clickedEmployee(data){
+    let card = document.querySelectorAll(".card");
+    for(let i=0; i< data.length; i++){
+        card[i].addEventListener("click", (e) => {
+            modalWindow(data[i]);
+        })
+    }
+}
+
+getEmployees(api);
 
 
 
