@@ -7,7 +7,7 @@ let gallery = document.querySelector("#gallery");
 let api = "https://randomuser.me/api/?results=12&nat=us";
 // console.log(fetch(api));
 
-// handles fetch requests and manupulates data from the api
+// handles fetch requests, manupulates data from the api and handles errors...
 async function getEmployees(url){
     let employeeResponse = await fetch(url)
         .then(res => res.json())
@@ -18,8 +18,9 @@ async function getEmployees(url){
             clickedEmployee(employeeList);
             
         })
-        // for later...add error methods to log if there is an error...
-        // look into the error message on the console.
+        .catch(error => {
+            console.log("Error Fetching Data: ", error);
+        })
 }
 
 // the functions shows employees in the gallery by 12 and inserts in the html body
