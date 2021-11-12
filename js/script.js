@@ -1,8 +1,7 @@
-// selecting elements from the DOM & starter variables...
+// selecting elements from the DOM & starter variable...
+let employeeList = [];
 let searchContainer = document.querySelector(".search-container");
 let gallery = document.querySelector("#gallery");
-let employeeList = [];
-let data;
 
 // api url with 12 employees only and US nationality...
 let api = "https://randomuser.me/api/?results=12&nat=us";
@@ -14,14 +13,16 @@ async function getEmployees(url){
         .then(res => res.json())
         .then(data => {
             employeeList = data.results;
+            // console.log(employeeList);
             employeeGallery(employeeList);
             clickedEmployee(employeeList);
+            
         })
         // for later...add error methods to log if there is an error...
         // look into the error message on the console.
 }
 
-// the functions shows employeers in the gallery by 12
+// the functions shows employees in the gallery by 12 and inserts in the html body
 function employeeGallery(data){
     data.map(employee => {
         employee = `
@@ -39,9 +40,25 @@ function employeeGallery(data){
     gallery.insertAdjacentHTML("beforeend", employee);
     })
 }
+// checks which employee has been clicked and sends the data to the modalWindow function to display it...
+
+function clickedEmployee(data){
+    let card = document.querySelectorAll(".card");
+    for(let i=0; i< data.length; i++){
+        card[i].addEventListener("click", (e) => {
+            modalWindow(data[i]);
+        })
+    }
+} 
 
 // following function displays and closes the modal when an employee is clicked...
 function modalWindow(employee){
+    let streetNumber = employee.location.street.number;
+    let streetName = employee.location.street.name;
+    let city = employee.location.city;
+    let state = employee.location.state;
+    let postCode = employee.location.postcode;
+
     let box = `
     <div class="modal-container">
     <div class="modal">
@@ -53,15 +70,14 @@ function modalWindow(employee){
             <p class="modal-text cap">${employee.location.city}</p>
             <hr>
             <p class="modal-text">${employee.phone}</p>
-            <p class="modal-text">${employee.location.street.number} ${employee.location.street.name} ${employee.location.city} ${employee.location.state} ${employee.location.postcode}</p>
-            <p class="modal-text">Birthday: ${employee.dob.date.slice(5,7)}/ ${employee.dob.date.slice(8,10)}/ ${employee.dob.date.slice(0,4)} </p>
+            <p class="modal-text">${streetNumber} ${streetName}, ${city}, ${state}, ${postCode}</p>
+            <p class="modal-text">Birthday: ${employee.dob.date.slice(5,7)}/${employee.dob.date.slice(8,10)}/${employee.dob.date.slice(0,4)} </p>
         </div>
     </div>` 
-
     // adds the box to the body
     gallery.insertAdjacentHTML("afterend", box);
 
-    // closes the box
+    // closes the modal box
     let closeButton = document.getElementById("modal-close-btn");
     let boxContainer = document.querySelector(".modal-container");
     closeButton.addEventListener("click", (e) => {
@@ -69,18 +85,7 @@ function modalWindow(employee){
     })
 
 }
-
-// checks which employee has been clicked and sends the data to the modalWindow function to display it...
-
-function clickedEmployee(data){
-    let card = document.querySelectorAll(".card");
-    for(let i=0; i< data.length; i++){
-        card[i].addEventListener("click", (e) => {
-            modalWindow(data[i]);
-        })
-    }
-}
-
+// call the getEmployees function
 getEmployees(api);
 
 
